@@ -1,0 +1,1 @@
+A dynamic Supply–Demand & Inventory Analytics Dashboard built using FastAPI, Pandas, and modern backend architecture.
