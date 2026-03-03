@@ -1,7 +1,7 @@
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from data_loader import load_data
-from routers import kpis, chat
+from routers import kpis, chat, reports
 
 # Initialize FastAPI app
 app = FastAPI(title="Supply Chain KPI Intelligence API")
@@ -23,6 +23,7 @@ def startup_event():
 # Include routers
 app.include_router(kpis.router, prefix="/api", tags=["KPIs"])
 app.include_router(chat.router, prefix="/api", tags=["Chat"])
+app.include_router(reports.router, prefix="/api", tags=["Reports"])
 
 @app.get("/")
 def read_root():
