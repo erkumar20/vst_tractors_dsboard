@@ -49,3 +49,10 @@ htmlcov/
 
 # FastAPI specific
 *.pid
+
+# Generated exports & reports
+backend/exports/
+backend/reports/
+
+# Generated alerts
+backend/alerts/
