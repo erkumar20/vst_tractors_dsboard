@@ -180,8 +180,8 @@ def check_allocation_breaches(
                 f"An allocation breach has been detected.\n\n"
                 f"Supplier: {row['SUPPLIER NAME']} ({row['SUPPLIER CODE']})\n"
                 f"Material: {row['MATERIAL DESC']} ({row['MATERIAL NO']})\n"
-                f"Allocated Quota: {row['Quota']}\n"
-                f"Actually Received: {row['RECEIVED QTY']}\n\n"
+                f"Allocated Quota: {row.get('Quota', 'Not specified in GRN')}\n"
+                f"Actually Received: {row.get('RECEIVED QTY', 0)}\n\n"
                 f"Please find the detailed PDF report attached."
             )
             
@@ -197,7 +197,7 @@ def check_allocation_breaches(
             "material_no": str(row['MATERIAL NO']),
             "received_qty": int(row['RECEIVED QTY']),
             "accepted_qty": int(row['ACCEPTED QTY']),
-            "rejected_qty": int(row['RECEIVED QTY'] - row['ACCEPTED QTY'])
+            "exceeded_qty": int(row['ACCEPTED QTY'] - row['RECEIVED QTY'])
         })
 
     return {

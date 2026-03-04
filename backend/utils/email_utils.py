@@ -59,10 +59,10 @@ def create_allocation_breach_pdf(row, pdf_path):
     pdf.cell(0, 8, f"Received Quantity: {row.get('RECEIVED QTY', 0)}", ln=True)
     pdf.cell(0, 8, f"Accepted Quantity: {row.get('ACCEPTED QTY', 0)}", ln=True)
     
-    rejected = row.get('RECEIVED QTY', 0) - row.get('ACCEPTED QTY', 0)
+    exceeded = int(row.get('ACCEPTED QTY', 0) - row.get('RECEIVED QTY', 0))
     pdf.set_font("Arial", 'B', 12)
     pdf.set_text_color(200, 0, 0)
-    pdf.cell(0, 8, f"Rejected / Shortfall Quantity: {rejected}", ln=True)
+    pdf.cell(0, 8, f"Exceeded Quantity: +{exceeded}", ln=True)
 
     # Make alerts directory if not exists
     os.makedirs(os.path.dirname(pdf_path), exist_ok=True)

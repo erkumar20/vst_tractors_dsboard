@@ -13,6 +13,7 @@ COLUMN_ALIASES = {
     "total invoice amount without tax": "TOTAL INVOICE AMOUNT W/O TAX",
     "invoice amount": "TOTAL INVOICE AMOUNT W/O TAX",
     "invoice value": "TOTAL INVOICE AMOUNT W/O TAX",
+    "invoice": "TOTAL INVOICE AMOUNT W/O TAX",
     "po price": "PO PRICE",
     "price": "PO PRICE",
     "quantity": "QUANTITY",
@@ -187,11 +188,11 @@ def handle_lookup(df, query):
     
     # If no aliases matched, try bare numbers as fallback
     if not filters_applied:
-        numbers = re.findall(r'\b(\d{7,})\b', query)
+        numbers = re.findall(r'\b[sS]?(\d{7,})\b', query)
         if numbers:
             for num in numbers:
                 for col in ["PURCHASE ORDER", "GRN NUMBER", "GATE ENTRY",
-                            "ACCOUNTING DOCUMENT NUMBER", "SUPPLIER INVOICE NUMBER"]:
+                            "ACCOUNTING DOCUMENT NUMBER", "SUPPLIER INVOICE NUMBER", "SUPPLIER CODE"]:
                     match_df = filtered_df[filtered_df[col].astype(str).str.strip() == str(num)]
                     if not match_df.empty:
                         filtered_df = match_df
@@ -286,8 +287,8 @@ def handle_compare(df, suppliers, materials, target_col=None):
     # For prices average makes more sense; for quantities sum makes more sense
     agg_func = 'mean' if "PRICE" in target_col.upper() else 'sum'
     
-    val1 = df1[target_col].mean() if agg_func == 'mean' else df1[target_col].sum()
-    val2 = df2[target_col].mean() if agg_func == 'mean' else df2[target_col].sum()
+    val1 = float(df1[target_col].mean()) if agg_func == 'mean' else float(df1[target_col].sum())
+    val2 = float(df2[target_col].mean()) if agg_func == 'mean' else float(df2[target_col].sum())
     
     # Format numbers neatly
     v1_str = f"{val1:,.2f}" if isinstance(val1, float) else f"{int(val1):,}"
@@ -330,7 +331,9 @@ def handle_trend(df, target_col=None, supplier_wise=False, rolling_window=None):
         
         datasets = []
         for supplier in trend_df['SUPPLIER NAME'].unique():
-            sup_df = trend_df[trend_df['SUPPLIER NAME'] == supplier].set_index('GRN DATE').reindex(all_dates, fill_value=0)
+            # Get only the target column series for this supplier and reindex to explicitly zero missing dates
+            sup_series = trend_df[trend_df['SUPPLIER NAME'] == supplier].set_index('GRN DATE')[target_col].reindex(all_dates, fill_value=0)
+            sup_df = sup_series.to_frame()
             
             if rolling_window:
                 sup_df[target_col] = sup_df[target_col].rolling(window=rolling_window, min_periods=1).mean()

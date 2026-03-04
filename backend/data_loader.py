@@ -52,12 +52,12 @@ def load_data():
 
 def get_grn_df():
     global grn_df
-    if grn_df is None:
+    if grn_df is None or grn_df.empty:
         load_data()
-    return grn_df
+    return grn_df.copy() if grn_df is not None else pd.DataFrame()
 
 def get_sob_df():
     global sob_df
-    if sob_df is None:
+    if sob_df is None or sob_df.empty:
         load_data()
-    return sob_df
+    return sob_df.copy() if sob_df is not None else pd.DataFrame()
