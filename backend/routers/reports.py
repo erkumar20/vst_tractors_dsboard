@@ -12,7 +12,9 @@ def download_report(path: str = Query(..., description="Absolute path to the PDF
     reports_dir = os.path.realpath(
         os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "reports")
     )
-    real_path = os.path.realpath(path)
+    # Strip literal quotes that might be accidentally included from Swagger copy/paste
+    clean_path = path.strip('"').strip("'")
+    real_path = os.path.realpath(clean_path)
     if not real_path.startswith(reports_dir):
         raise HTTPException(status_code=403, detail="Access denied.")
     if not os.path.exists(real_path):
@@ -37,7 +39,9 @@ def download_excel(path: str = Query(..., description="Absolute path to the Exce
     exports_dir = os.path.realpath(
         os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "exports")
     )
-    real_path = os.path.realpath(path)
+    # Strip literal quotes that might be accidentally included from Swagger copy/paste
+    clean_path = path.strip('"').strip("'")
+    real_path = os.path.realpath(clean_path)
     if not real_path.startswith(exports_dir):
         raise HTTPException(status_code=403, detail="Access denied.")
     if not os.path.exists(real_path):
