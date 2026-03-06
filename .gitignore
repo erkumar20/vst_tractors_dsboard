@@ -1,57 +1,15 @@
-# =========================
-# Mac system files
-# =========================
-.DS_Store
+# Python virtual environment
+venv/
 
-# =========================
-# Python
-# =========================
+# Python cache
 __pycache__/
 *.pyc
-*.pyo
-*.pyd
 
-# Virtual environments
-venv/
-.venv/
-ENV/
-env/
+# Mac files
+.DS_Store
 
 # Environment variables
 .env
 
-# =========================
-# Node / React
-# =========================
-node_modules/
-dist/
-build/
-
-# =========================
 # Logs
-# =========================
 *.log
-
-# =========================
-# Generated folders
-# =========================
-backend/alerts/
-backend/exports/
-backend/reports/
-
-# =========================
-# IDE
-# =========================
-.vscode/
-.idea/
-
-# =========================
-# Jupyter
-# =========================
-.ipynb_checkpoints/
-
-venv/
-__pycache__/
-*.pyc
-.env
-.DS_Store
