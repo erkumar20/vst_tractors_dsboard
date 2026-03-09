@@ -127,7 +127,7 @@ def extract_materials(query, df):
     return list(set(materials_found))
 # --- Intent Handlers ---
 
-def handle_lookup(df, query):
+def handle_lookup(df, query, suppliers=None, materials=None):
     q = query.lower()
     
     # ── Step 1: Find which column the user is asking about ─────────────
@@ -145,6 +145,16 @@ def handle_lookup(df, query):
     filtered_df = df.copy()
     filters_applied = []
     matched_spans = [] # Keep track of chars already used for a filter
+    
+    if suppliers:
+        filtered_df = filtered_df[filtered_df['SUPPLIER NAME'].isin(suppliers)]
+        filters_applied.append(f"SUPPLIER = {', '.join(suppliers)}")
+        
+    if materials:
+        m_list = [m.lower() for m in materials]
+        filtered_df = filtered_df[filtered_df['MATERIAL DESC'].str.lower().isin(m_list) | 
+                                  filtered_df['MATERIAL NO'].str.lower().isin(m_list)]
+        filters_applied.append(f"MATERIAL = {', '.join(materials)}")
     
     # Extract all filters present in the query
     for alias in sorted(FILTER_ALIASES.keys(), key=len, reverse=True):
@@ -753,7 +763,7 @@ def chat(request: ChatRequest):
         return handle_mom(df, query, target_col)
     
     elif intent == "lookup":
-        return handle_lookup(get_grn_df(), query)
+        return handle_lookup(get_grn_df(), query, suppliers, materials)
         
     elif intent == "quota":
         return handle_quota(sob_df, suppliers, materials)
